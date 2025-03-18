@@ -104,7 +104,7 @@ def process_csv_events(df_csv, conn, db_table, db_column_eng, db_column_ita , se
         return"""
     
     # Query per prendere i dati dalla tabella specificata
-    query = f"SELECT {db_column_eng, db_column_ita} FROM '{db_table}'"
+    query = f"SELECT {db_column_eng}, {db_column_ita} FROM '{db_table}'"
     df_db = pd.read_sql(query, conn)
 
     # Identifica le righe che contengono il valore di ricerca nella prima colonna
@@ -116,7 +116,7 @@ def process_csv_events(df_csv, conn, db_table, db_column_eng, db_column_ita , se
         print(f"⚠️ ATTENZIONE: Nessuna riga trovata con '{search_value}' nel CSV.")
         return
     if num_replacements != len(df_db) :
-        print(f"Attenzione: il numero di righe tra database e file .csv {search_value} / {db_table} è diverso.")
+        print(f"Attenzione: il numero di righe tra database e file .csv {search_value}{num_replacements} / {db_table}{len(df_db)} è diverso.")
         return
     
     print(f"Colonne disponibili nel database {db_table}: {df_db.columns.tolist()}")
@@ -128,4 +128,4 @@ def process_csv_events(df_csv, conn, db_table, db_column_eng, db_column_ita , se
     df_csv.loc[mask, "FR"] = df_db["ENG"].values[:num_replacements]       # INGLESE → FR
     df_csv.loc[mask, "IT"] = df_db["ITA"].values[:num_replacements]      # ITALIANO → IT
 
-    print(f"✅ SUCCESSO: Aggiornate {num_replacements} righe con dati da '{db_table}'.")
+    print(f"SUCCESSO: Aggiornate {num_replacements} righe con dati da '{db_table}'.")
